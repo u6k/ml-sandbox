@@ -85,7 +85,14 @@ ra = RandomActor(b)
 obs_size = 9
 n_actions = 9
 # Q-functionとオプティマイザーのセットアップ
-q_func = QFunction(obs_size, n_actions)
+#q_func = QFunction(obs_size, n_actions)
+
+q_func = chainerrl.q_functions.FCStateQFunctionWithDiscreteAction(
+    obs_size,
+    n_actions,
+    n_hidden_layers=3,
+    n_hidden_channels=81)
+
 optimizer = chainer.optimizers.Adam(eps=1e-2)
 optimizer.setup(q_func)
 # 報酬の割引率
@@ -117,8 +124,8 @@ agent_p2 = chainerrl.agents.DoubleDQN(
     target_update_interval=100)
 
 #学習ゲーム回数
-#n_episodes = 20000
-n_episodes = 0
+n_episodes = 20000
+#n_episodes = 0
 #カウンタの宣言
 miss = 0
 win = 0
@@ -174,7 +181,7 @@ for i in range(1, n_episodes + 1):
 
 print("Training finished.")
 
-agent_p1.load("result_20000")  #←これを追加
+#agent_p1.load("result_20000")  #←これを追加
 
 #人間のプレーヤー
 class HumanPlayer:
@@ -193,34 +200,34 @@ class HumanPlayer:
                     print (act +  " is invalid")
 
 #検証
-human_player = HumanPlayer()
-for i in range(10):
-    b.reset()
-    dqn_first = np.random.choice([True, False])
-    while not b.done:
-        #DQN
-        if dqn_first or np.count_nonzero(b.board) > 0:
-            b.show()
-            action = agent_p1.act(b.board.copy())
-            b.move(action, 1)
-            if b.done == True:
-                if b.winner == 1:
-                    print("DQN Win")
-                elif b.winner == 0:
-                    print("Draw")
-                else:
-                    print("DQN Missed")
-                agent_p1.stop_episode()
-                continue
-        #人間
-        b.show()
-        action = human_player.act(b.board.copy())
-        b.move(action, -1)
-        if b.done == True:
-            if b.winner == -1:
-                print("HUMAN Win")
-            elif b.winner == 0:
-                print("Draw")
-            agent_p1.stop_episode()
-
-print("Test finished.")
+#human_player = HumanPlayer()
+#for i in range(10):
+#    b.reset()
+#    dqn_first = np.random.choice([True, False])
+#    while not b.done:
+#        #DQN
+#        if dqn_first or np.count_nonzero(b.board) > 0:
+#            b.show()
+#            action = agent_p1.act(b.board.copy())
+#            b.move(action, 1)
+#            if b.done == True:
+#                if b.winner == 1:
+#                    print("DQN Win")
+#                elif b.winner == 0:
+#                    print("Draw")
+#                else:
+#                    print("DQN Missed")
+#                agent_p1.stop_episode()
+#                continue
+#        #人間
+#        b.show()
+#        action = human_player.act(b.board.copy())
+#        b.move(action, -1)
+#        if b.done == True:
+#            if b.winner == -1:
+#                print("HUMAN Win")
+#            elif b.winner == 0:
+#                print("Draw")
+#            agent_p1.stop_episode()
+#
+#print("Test finished.")

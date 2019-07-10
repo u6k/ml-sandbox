@@ -28,8 +28,9 @@ def train():
     score = accuracy_score(y_test, y_pred)
 
     print(score)
+    # 0.9681142857142857
 
 
 if __name__ == "__main__":
-    # download()
+    download()
     train()
